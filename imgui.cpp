@@ -8258,11 +8258,11 @@ bool ImGui::Begin(const char* name, bool* p_open, ImGuiWindowFlags flags)
             if (window->AutoFitFramesY > 0) { window->AutoFitFramesY++; }
             return false;
         }
-#endif
+#endif 
     //修复任务栏创建无图标
     if (window->renderCount > 2)window->initWindow = true;
     if (window->initWindow==false) {
-        SetActiveWindow((HWND)window->Viewport->PlatformHandle);
+       SetActiveWindow((HWND)window->Viewport->PlatformHandle);
         window->renderCount++;
     }
  

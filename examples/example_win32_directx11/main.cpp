@@ -6,7 +6,7 @@
 // - Getting Started      https://dearimgui.com/getting-started
 // - Documentation        https://dearimgui.com/docs (same as your local docs/ folder).
 // - Introduction, links and more at the top of imgui.cpp
-
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
@@ -22,6 +22,7 @@ static bool                     g_SwapChainOccluded = false;
 static UINT                     g_ResizeWidth = 0, g_ResizeHeight = 0;
 static ID3D11RenderTargetView*  g_mainRenderTargetView = nullptr;
 
+
 // Forward declarations of helper functions
 bool CreateDeviceD3D(HWND hWnd);
 void CleanupDeviceD3D();
@@ -31,8 +32,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 #include <oleidl.h>
 #include <string>
 #include <vector>
-#include <dwmapi.h>
-
+#include <EasingAnimationSystem.h>
 
 class DropManager : public IDropTarget
 {
@@ -151,6 +151,8 @@ public:
 // Main code
 int main(int, char**)
 {
+
+ 
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
@@ -174,9 +176,6 @@ int main(int, char**)
 
     // Show the window
     ::ShowWindow(hwnd, SW_SHOWNOACTIVATE);
-   // ::ShowWindow(hwnd, SW_SHOWMINNOACTIVE);
-    //::UpdateWindow(hwnd);
-   // ::ShowWindow(hwnd, SW_HIDE);
     ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
     ::UpdateWindow(hwnd);
 
@@ -212,27 +211,10 @@ int main(int, char**)
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return a nullptr. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Use '#define IMGUI_ENABLE_FREETYPE' in your imconfig file to use Freetype for higher quality font rendering.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != nullptr);
-
-    // Our state
     bool show_demo_window = true;
     bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
+    //ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    ImVec4 clear_color = ImVec4(0.f, 0.f, 0.f, 0.f);
     ImGuiContext& g = *GImGui;
     HWND hwndWindow=0;
 
@@ -241,7 +223,8 @@ int main(int, char**)
 
     DropManager dm;
    //RegisterDragDrop(hwnd, &dm);
-
+    static ImEasing::Animation<ImVec2> m_posAnim;
+    static ImEasing::Animation<ImVec4> m_colorAnim;
     // Main loop
     bool done = false;
     while (!done)
@@ -280,33 +263,39 @@ int main(int, char**)
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
-        
+
+
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-        
+        if (show_demo_window)ImGui::ShowDemoWindow(&show_demo_window);
+
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         {
             static float f = 0.0f;
             static int counter = 0;
             static bool init = false;
-            
-            ImGui::Begin("Hello, world!" , &show_demo_window,ImGuiWindowFlags_NoBackground);
-
+            ImGui::Begin("Hello, world!X", &show_demo_window);
+            ImGui::EndChild();
+            ImGui::Begin("Hello, world!" , &show_demo_window);
 
             if (!init) {
                 if (hwndWindow == NULL)
-                    hwndWindow = (HWND)g.CurrentWindow->Viewport->PlatformHandle;
+                    hwndWindow = g.CurrentWindow->Viewport->PlatformHandleRaw ? (HWND)g.CurrentWindow->Viewport->PlatformHandleRaw : (HWND)g.CurrentWindow->Viewport->PlatformHandle;
                 if (hwndWindow != nullptr) { 
                     init = true;
-                    RegisterDragDrop(hwndWindow, &dm);
-                    static const MARGINS shadow_state{ 1,1,1,1 };
-                    DwmExtendFrameIntoClientArea(hwndWindow, &shadow_state);
-                    ::UpdateWindow(hwndWindow);
+                //    ImGui_ImplWin32_EnableAlphaCompositing(hwndWindow);
+                    RegisterDragDrop(hwndWindow, &dm);//添加拖拽功能
+                  //  SetWindowLongPtr(hwndWindow, GWL_EXSTYLE, GetWindowLongPtr(hwndWindow, GWL_EXSTYLE) | WS_EX_LAYERED);
+                  //  SetLayeredWindowAttributes(hwndWindow, 0, 255, LWA_ALPHA); // 初始不透明
+                  //  MARGINS margins = { -10, -10, -10, -10 }; // 四周扩展 10 像素
+                   // DwmExtendFrameIntoClientArea(hwndWindow, &margins);
+                 //   ::UpdateWindow(hwndWindow);
+               //     SetWindowPos(hwndWindow, nullptr, 0, 0, 0, 0,
+              //          SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
                     counter++;
                 }
 
             }
+
 
             ImGui::BeginChild("HELLO WOLRD!!",ImVec2(100, 100));
             ImGui::Text("This is some useful text.");
@@ -320,7 +309,20 @@ int main(int, char**)
             ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
             ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-            if (ImGui::Button("Button"));                          // Buttons return true when clicked (most widgets return true when edited/activated)
+            if (ImGui::Button("Start Position Animation")) {
+                m_posAnim.Start(
+                    ImVec2(100, 100),
+                    ImVec2(400, 100),
+                    {1.5f,0,1,true,ImEasing::Ease::InBounce }
+                );
+            }
+            if (ImGui::Button("Start Color Animation")) {
+                m_colorAnim.Start(
+                    ImVec4(0, 0, 0, 0),
+                    ImVec4(255, 123, 255, 1),
+                    { 2.0f,0,-1, true,  ImEasing::Ease::InOutCubic }
+                );
+            }
 
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
@@ -329,6 +331,15 @@ int main(int, char**)
             }
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+            
+            ImVec2 m_currentPos = m_posAnim.Update();
+            ImVec4 color=m_colorAnim.Update();
+        
+            ImGui::SetCursorPos(m_currentPos);
+            ImVec2 pos = ImGui::GetWindowPos();
+
+            ImGui::GetWindowDrawList()->AddRectFilled(pos+m_currentPos, pos+m_currentPos+ImVec2(50,50), ImGui::GetColorU32(color));
+            ImGui::Button("Buttonxx", ImVec2(100, 100));
             ImGui::End();
            // counter++;
         }
@@ -349,6 +360,8 @@ int main(int, char**)
         const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
         g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
         g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, clear_color_with_alpha);
+       
+    
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
         // Update and Render additional Platform Windows

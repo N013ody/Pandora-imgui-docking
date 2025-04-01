@@ -1084,12 +1084,14 @@ static void ImGui_ImplWin32_CreateWindow(ImGuiViewport* viewport)
     vd->Hwnd = ::CreateWindowExW(
         vd->DwExStyle, L"ImGui Platform", L"Untitled", vd->DwStyle,       // Style, class name, window name
         rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,    // Window area
-        vd->HwndParent, nullptr, ::GetModuleHandle(nullptr), nullptr);          // Owner window, Menu, Instance, Param
+        nullptr, nullptr, ::GetModuleHandle(nullptr), nullptr);          // Owner window, Menu, Instance, Param
     vd->HwndOwned = true;
     viewport->PlatformRequestResize = false;
     viewport->PlatformHandle = viewport->PlatformHandleRaw = vd->Hwnd;
+
     ImGui_ImplWin32_EnableAlphaCompositing(vd->Hwnd);
-    
+
+
     // Secondary viewports store their imgui context
     ::SetPropA(vd->Hwnd, "IMGUI_CONTEXT", ImGui::GetCurrentContext());
     ::SetPropA(vd->Hwnd, "IMGUI_VIEWPORT", viewport);

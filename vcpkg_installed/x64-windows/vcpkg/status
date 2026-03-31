@@ -1,0 +1,50 @@
+Package: vcpkg-cmake-config
+Version: 2024-05-23
+Architecture: x64-windows
+Multi-Arch: same
+Abi: ddd5cbabe6b54508b62ff238ba08397297c0231a8a6536964329e674919d6592
+Status: install ok installed
+
+Package: vcpkg-cmake
+Version: 2024-04-23
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 81876687c4854a5e9c4fdfe3802323d42f3581848680364c8d8d1cb358d511aa
+Status: install ok installed
+
+Package: directxmath
+Version: 2025-04-03
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 4a6ba5bae63cae7749f6f6bb4697baee34cf4d25ca7b4c57a3c6b883b0e7d21d
+Description: DirectXMath SIMD C++ math library
+Status: install ok installed
+
+Package: directxtk
+Version: 2025-10-27
+Depends: directxmath, vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: e3fc3083b0fcd0c0e82f01f853403f94c9fc980c281a658a58590f172f705fd5
+Description: A collection of helper classes for writing DirectX 11.x code in C++.
+Status: install ok installed
+
+Package: nanosvg
+Version: 2023-12-29
+Depends: vcpkg-cmake
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 29f48407775e0b1aac61fdf318414f2e52e3d671cf8a9664e63e05b48e55a306
+Description: Simple stupid SVG parser
+Status: install ok installed
+
+Package: rlottie
+Version: 0.2
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 2aa797c793fcbf8b403b4a71c1d35350a0f83ece9d02470727ce913297c64006
+Description: A platform independent standalone library that plays Lottie Animation.
+Status: install ok installed
+

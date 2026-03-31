@@ -1,0 +1,12 @@
+x64-windows/
+x64-windows/debug/
+x64-windows/include/
+x64-windows/include/rlottie.h
+x64-windows/include/rlottie_capi.h
+x64-windows/include/rlottiecommon.h
+x64-windows/share/
+x64-windows/share/rlottie/
+x64-windows/share/rlottie/copyright
+x64-windows/share/rlottie/rlottie-config.cmake
+x64-windows/share/rlottie/vcpkg.spdx.json
+x64-windows/share/rlottie/vcpkg_abi_info.txt

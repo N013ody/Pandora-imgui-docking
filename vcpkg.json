@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "pandora-imgui-example",
+  "version-string": "1.0.0",
+  "description": "一个基于ImGui和DirectX 11的示例项目",
+  "dependencies": [
+    "directxtk",
+    "rlottie",
+    "nanosvg"
+  ],
+  "vcpkg-configuration": {
+    "overlay-ports": [
+      "./vcpkg_ports"
+    ]
+  }
+}

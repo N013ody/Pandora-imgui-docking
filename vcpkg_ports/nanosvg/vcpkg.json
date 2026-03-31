@@ -1,0 +1,12 @@
+{
+  "name": "nanosvg",
+  "version": "2023-12-29",
+  "description": "Simple stupid SVG parser",
+  "homepage": "https://github.com/memononen/nanosvg",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    }
+  ]
+}

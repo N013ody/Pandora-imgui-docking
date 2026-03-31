@@ -1,0 +1,10 @@
+x64-windows/
+x64-windows/include/
+x64-windows/include/nanosvg.h
+x64-windows/include/nanosvgrast.h
+x64-windows/share/
+x64-windows/share/nanosvg/
+x64-windows/share/nanosvg/copyright
+x64-windows/share/nanosvg/nanosvg-config.cmake
+x64-windows/share/nanosvg/vcpkg.spdx.json
+x64-windows/share/nanosvg/vcpkg_abi_info.txt

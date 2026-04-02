@@ -15,15 +15,15 @@ using namespace Window;
 
 
 SVGTexture GetSVGTexture(ID3D11Device* device, NSVGimage* svgImage, float scale, int scaledWidth, int scaledHeight, bool release) {
-    //·ÖÅäÏñËØ»º³åÇø
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø»ï¿½ï¿½ï¿½ï¿½ï¿½
     std::vector<unsigned char> pixels(scaledWidth * scaledHeight * 4);
     NSVGrasterizer* rasterizer = nsvgCreateRasterizer();
-    //¹âÕ¤»¯µ½Ëõ·ÅºóµÄ³ß´ç
+    //ï¿½ï¿½Õ¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½Ä³ß´ï¿½
     nsvgRasterize(rasterizer, svgImage, 0, 0, scale, pixels.data(), scaledWidth, scaledHeight, scaledWidth * 4);
     nsvgDeleteRasterizer(rasterizer);
 
 
-    //´´½¨DX11ÎÆÀí
+    //ï¿½ï¿½ï¿½ï¿½DX11ï¿½ï¿½ï¿½ï¿½
     D3D11_TEXTURE2D_DESC desc = {};
     desc.Width = scaledWidth;
     desc.Height = scaledHeight;
@@ -36,7 +36,7 @@ SVGTexture GetSVGTexture(ID3D11Device* device, NSVGimage* svgImage, float scale,
 
     D3D11_SUBRESOURCE_DATA initData = {};
     initData.pSysMem = pixels.data();
-    initData.SysMemPitch = (scaledWidth * 4); //128×Ö½Ú¶ÔÆë
+    initData.SysMemPitch = (scaledWidth * 4); //128ï¿½Ö½Ú¶ï¿½ï¿½ï¿½
 
     ComPtr<ID3D11Texture2D> texture;
     HRESULT hr = device->CreateTexture2D(&desc, &initData, &texture);
@@ -75,18 +75,18 @@ SVGTexture CreateSVGTexture(ID3D11Device* device, NSVGimage* svgImage, float sca
 }
 
 SVGTexture CreateSVGTexture(ID3D11Device* device, const char* svgPath, float scale,bool release) {
-    //ÎÄ¼ş´æÔÚ
+    //ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
     if (!std::filesystem::exists(svgPath)) {
         return {};
     }
 
-    //SVG½âÎö
+    //SVGï¿½ï¿½ï¿½ï¿½
     NSVGimage* svgImage = nsvgParseFromFile(svgPath, "px", 96.0f);
     if (!svgImage || svgImage->width <= 0 || svgImage->height <= 0) {
         return {};
     }
 
-    //¼ÆËãËõ·Å³ß´ç
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å³ß´ï¿½
     int width = static_cast<int>(svgImage->width * scale);
     int height = static_cast<int>(svgImage->height * scale);
     if (width == 0 || height == 0) {
@@ -95,6 +95,132 @@ SVGTexture CreateSVGTexture(ID3D11Device* device, const char* svgPath, float sca
     }
     SVGTexture result = GetSVGTexture(device, svgImage, scale, width, height, release);
     return result;
+}
+
+// ä½¿ç”¨WICåŠ è½½PNGå›¾ç‰‡
+#include <wincodec.h>
+#pragma comment(lib, "windowscodecs.lib")
+
+ImageTexture LoadPNGTexture(ID3D11Device* device, const char* filePath) {
+    ImageTexture result = {};
+    
+    // æ£€æŸ¥æ–‡ä»¶æ˜¯å¦å­˜åœ¨
+    if (!std::filesystem::exists(filePath)) {
+        printf("PNG file not found: %s\n", filePath);
+        return result;
+    }
+    
+    // åˆå§‹åŒ–WIC
+    IWICImagingFactory* wicFactory = nullptr;
+    HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&wicFactory));
+    if (FAILED(hr)) {
+        printf("Failed to create WIC factory\n");
+        return result;
+    }
+    
+    // åˆ›å»ºè§£ç å™¨
+    IWICBitmapDecoder* decoder = nullptr;
+    wchar_t wFilePath[MAX_PATH];
+    MultiByteToWideChar(CP_UTF8, 0, filePath, -1, wFilePath, MAX_PATH);
+    hr = wicFactory->CreateDecoderFromFilename(wFilePath, nullptr, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &decoder);
+    if (FAILED(hr)) {
+        printf("Failed to create PNG decoder for: %s\n", filePath);
+        wicFactory->Release();
+        return result;
+    }
+    
+    // è·å–ç¬¬ä¸€å¸§
+    IWICBitmapFrameDecode* frame = nullptr;
+    hr = decoder->GetFrame(0, &frame);
+    if (FAILED(hr)) {
+        decoder->Release();
+        wicFactory->Release();
+        return result;
+    }
+    
+    // è·å–å›¾ç‰‡å°ºå¯¸
+    UINT width, height;
+    frame->GetSize(&width, &height);
+    
+    // è½¬æ¢ä¸º32ä½RGBAæ ¼å¼
+    IWICFormatConverter* converter = nullptr;
+    hr = wicFactory->CreateFormatConverter(&converter);
+    if (FAILED(hr)) {
+        frame->Release();
+        decoder->Release();
+        wicFactory->Release();
+        return result;
+    }
+    
+    hr = converter->Initialize(frame, GUID_WICPixelFormat32bppRGBA, WICBitmapDitherTypeNone, nullptr, 0.0f, WICBitmapPaletteTypeCustom);
+    if (FAILED(hr)) {
+        converter->Release();
+        frame->Release();
+        decoder->Release();
+        wicFactory->Release();
+        return result;
+    }
+    
+    // è¯»å–åƒç´ æ•°æ®
+    std::vector<BYTE> pixels(width * height * 4);
+    hr = converter->CopyPixels(nullptr, width * 4, static_cast<UINT>(pixels.size()), pixels.data());
+    if (FAILED(hr)) {
+        converter->Release();
+        frame->Release();
+        decoder->Release();
+        wicFactory->Release();
+        return result;
+    }
+    
+    // åˆ›å»ºD3D11çº¹ç†
+    D3D11_TEXTURE2D_DESC desc = {};
+    desc.Width = width;
+    desc.Height = height;
+    desc.MipLevels = 1;
+    desc.ArraySize = 1;
+    desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    desc.SampleDesc.Count = 1;
+    desc.Usage = D3D11_USAGE_IMMUTABLE;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    
+    D3D11_SUBRESOURCE_DATA initData = {};
+    initData.pSysMem = pixels.data();
+    initData.SysMemPitch = width * 4;
+    
+    ComPtr<ID3D11Texture2D> texture;
+    hr = device->CreateTexture2D(&desc, &initData, &texture);
+    if (FAILED(hr)) {
+        converter->Release();
+        frame->Release();
+        decoder->Release();
+        wicFactory->Release();
+        return result;
+    }
+    
+    // åˆ›å»ºShader Resource View
+    hr = device->CreateShaderResourceView(texture.Get(), nullptr, &result.srv);
+    if (SUCCEEDED(hr)) {
+        result.size = ImVec2(static_cast<float>(width), static_cast<float>(height));
+        result.valid = true;
+        printf("Loaded PNG: %s (%dx%d)\n", filePath, width, height);
+    }
+    
+    // æ¸…ç†
+    converter->Release();
+    frame->Release();
+    decoder->Release();
+    wicFactory->Release();
+    
+    return result;
+}
+
+void UnloadTexture(ImageTexture& texture) {
+    if (texture.srv) {
+        texture.srv->Release();
+        texture.srv = nullptr;
+    }
+    texture.valid = false;
+    texture.size = ImVec2(0, 0);
 }
 
 void Shutdown(HWND BackendWindow, DirectXData WindowDats) {

@@ -33,11 +33,21 @@ struct SVGTexture {
     ImVec2 size;
 };
 
+struct ImageTexture {
+    ID3D11ShaderResourceView* srv = nullptr;
+    ImVec2 size = ImVec2(0, 0);
+    bool valid = false;
+};
+
 SVGTexture GetSVGTexture(ID3D11Device* device, NSVGimage* svgImage,float scale, int scaledWidth, int scaledHeight, bool release);
 
 SVGTexture CreateSVGTexture(ID3D11Device* device, NSVGimage* svgImage, float scale=1.0f, bool release = false);
 
 SVGTexture CreateSVGTexture(ID3D11Device* device, const char* svgPath, float scale=1.0f, bool release = false);
+
+// 加载PNG图片纹理
+ImageTexture LoadPNGTexture(ID3D11Device* device, const char* filePath);
+void UnloadTexture(ImageTexture& texture);
 
 bool CreateShaderTarget(ID3D11Device* g_pd3dDevice, ID3D11Texture2D** g_pRenderTargetTexture, ID3D11RenderTargetView** g_pRenderTargetView, ID3D11ShaderResourceView** g_pShaderResourceView);
 

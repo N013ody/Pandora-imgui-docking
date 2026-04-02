@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -86,6 +86,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>false</VcpkgEnableManifest>
+    <VcpkgEnabled>true</VcpkgEnabled>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -105,7 +106,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(VcpkgRoot)\installed\x64-windows\include\directxtk;$(VcpkgRoot)\installed\x64-windows\include\;$(VcpkgRoot)\installed\x64-windows\include\nanosvg;$(WindowsSDK_IncludePath);$(ProjectDir);..\..\Pandora-imgui-docking;..\example_win32_directx11\Profile;..\example_win32_directx11\Utils;..\example_win32_directx11\Blur;..\example_win32_directx11\Manager;..\backends;..\misc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..;..\backends;..\misc;$(VcpkgRoot)\installed\x64-windows\include\directxtk;$(VcpkgRoot)\installed\x64-windows\include\;$(VcpkgRoot)\installed\x64-windows\include\nanosvg;$(WindowsSDK_IncludePath);$(ProjectDir);Profile;Utils;Blur;Manager;..\..\Novocaine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -173,10 +174,13 @@
     <ClInclude Include="EasingAnimationSystem.h" />
     <ClInclude Include="GuiMain.h" />
     <ClInclude Include="Images.h" />
+    <ClInclude Include="InitializingPage.h" />
     <ClInclude Include="ImageUtil.h" />
     <ClInclude Include="imgui_utils.h" />
     <ClInclude Include="LottieAnimator.h" />
+    <ClInclude Include="MainPage.h" />
     <ClInclude Include="Manager\DropManager.hpp" />
+    <ClInclude Include="Profile\Profile.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="SVGCacheManager.hpp" />
     <ClInclude Include="TimeHelper.hpp" />
@@ -196,12 +200,13 @@
     <ClCompile Include="custom_widgets.cpp" />
     <ClCompile Include="DX11Util.cpp" />
     <ClCompile Include="GuiMain.cpp" />
+    <ClCompile Include="InitializingPage.cpp" />
     <ClCompile Include="ImageUtil.cpp" />
     <ClCompile Include="imgui_utils.cpp" />
     <ClCompile Include="LottieAnimator.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainPage.cpp" />
     <ClCompile Include="Profile\Profile.cpp" />
-    <ClCompile Include="Profile\Profile.h" />
     <ClCompile Include="Utils\MathUtil.cpp" />
     <ClCompile Include="Utils\WindowUtil.cpp" />
   </ItemGroup>

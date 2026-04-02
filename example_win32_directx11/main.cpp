@@ -1,5 +1,4 @@
 
-
 #pragma comment(lib, "d3dcompiler.lib")
 
 // Learn about Dear ImGui:
@@ -30,7 +29,7 @@ int main(int, char**){
 
     RegisterClassExW(&BackendWC);
 
-    BackendWindow= CreateWindowW(BackendWC.lpszClassName, L"Pandora ImGui Example", WS_POPUP, 100, 100, 500, 500, NULL, NULL, BackendWC.hInstance, NULL);
+    BackendWindow= CreateWindowW(BackendWC.lpszClassName, L"Pandora ImGui Example", WS_POPUP, 100, 100, 1280, 1024, NULL, NULL, BackendWC.hInstance, NULL);
     ImGui::CreateContext();
     InitDirectX(BackendWindow, BackendWC);
 
@@ -48,7 +47,7 @@ int main(int, char**){
     io.ConfigViewportsNoDecoration = true;
     io.ConfigViewportsNoDefaultParent = true;
 
-    //��ʽ��ʼ��
+    //样式初始化
     ImGui::StyleColorsLight();
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowRounding = 10.0f;
@@ -79,6 +78,161 @@ int main(int, char**){
     ImFontConfig cfg;
     cfg.FontDataOwnedByAtlas = false;
     cfg.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_ForceAutoHint | ImGuiFreeTypeBuilderFlags_LightHinting | ImGuiFreeTypeBuilderFlags_LoadColor;
+
+    // 加载所有需要的字体
+    // 使用相对路径从运行目录下的fonts文件夹加载
+    const char* font_dir = "fonts/";
+    
+    // Inter font 16 Regular - 底部栏 (大小12)
+    extern ImFont* g_font_inter_regular_12;
+    cfg.SizePixels = 12.0f;
+    g_font_inter_regular_12 = io.Fonts->AddFontFromFileTTF("fonts/Inter-Regular.ttf", 12.0f, &cfg);
+    if (!g_font_inter_regular_12) {
+        printf("Failed to load fonts/Inter-Regular.ttf (12px)\n");
+    }
+    
+    // Inter font 16 Regular - System Status, Build (大小12)
+    extern ImFont* g_font_inter_regular_10;
+    cfg.SizePixels = 12.0f;
+    g_font_inter_regular_10 = io.Fonts->AddFontFromFileTTF("fonts/Inter-Regular.ttf", 12.0f, &cfg);
+    if (!g_font_inter_regular_10) {
+        printf("Failed to load fonts/Inter-Regular.ttf (12px)\n");
+    }
+
+    // Inter Semibold - OR, Operational (大小12)
+    extern ImFont* g_font_inter_semibold_10;
+    cfg.SizePixels = 12.0f;
+    g_font_inter_semibold_10 = io.Fonts->AddFontFromFileTTF("fonts/Inter-SemiBold.ttf", 12.0f, &cfg);
+    if (!g_font_inter_semibold_10) {
+        printf("Failed to load fonts/Inter-SemiBold.ttf (12px)\n");
+    }
+    
+    // Manrope Bold - LOGIN (大小16)
+    extern ImFont* g_font_manrope_bold_14;
+    cfg.SizePixels = 16.0f;
+    g_font_manrope_bold_14 = io.Fonts->AddFontFromFileTTF("fonts/Manrope-Bold.ttf", 16.0f, &cfg);
+    if (!g_font_manrope_bold_14) {
+        printf("Failed to load fonts/Manrope-Bold.ttf (16px)\n");
+    }
+
+    extern ImFont* g_font_manrope_bold_18;
+    cfg.SizePixels = 18.0f;
+    g_font_manrope_bold_18 = io.Fonts->AddFontFromFileTTF("fonts/Manrope-Bold.ttf", 18.0f, &cfg);
+    if (!g_font_manrope_bold_18) {
+        printf("Failed to load fonts/Manrope-Bold.ttf (18px)\n");
+    }
+    
+    // Inter Semibold - Account Credentials, License Key 标签 (大小12)
+    extern ImFont* g_font_inter_semibold_12;
+    cfg.SizePixels = 12.0f;
+    g_font_inter_semibold_12 = io.Fonts->AddFontFromFileTTF("fonts/Inter-SemiBold.ttf", 12.0f, &cfg);
+    if (!g_font_inter_semibold_12) {
+        printf("Failed to load fonts/Inter-SemiBold.ttf (12px)\n");
+    }
+    
+    // Inter font 16 Regular - 编辑栏 (大小16)
+    extern ImFont* g_font_inter_regular_16;
+    cfg.SizePixels = 16.0f;
+    g_font_inter_regular_16 = io.Fonts->AddFontFromFileTTF("fonts/Inter-Regular.ttf", 16.0f, &cfg);
+    if (!g_font_inter_regular_16) {
+        printf("Failed to load fonts/Inter-Regular.ttf (16px)\n");
+    }
+    
+    // Inter Semibold - LOGIN按钮 (大小16)
+    extern ImFont* g_font_inter_semibold_16;
+    cfg.SizePixels = 16.0f;
+    g_font_inter_semibold_16 = io.Fonts->AddFontFromFileTTF("fonts/Inter-SemiBold.ttf", 16.0f, &cfg);
+    if (!g_font_inter_semibold_16) {
+        printf("Failed to load fonts/Inter-SemiBold.ttf (16px)\n");
+    }
+    
+    // Manrope ExtraBold - NOVOCAINES (大小32)
+    extern ImFont* g_font_manrope_extrabold_32;
+    cfg.SizePixels = 32.0f;
+    g_font_manrope_extrabold_32 = io.Fonts->AddFontFromFileTTF("fonts/Manrope-ExtraBold.ttf", 32.0f, &cfg);
+    if (!g_font_manrope_extrabold_32) {
+        printf("Failed to load fonts/Manrope-ExtraBold.ttf (32px)\n");
+    }
+    
+    // Inter font 16 Regular - Clinical Injection Systems (大小14)
+    extern ImFont* g_font_inter_regular_14;
+    cfg.SizePixels = 14.0f;
+    g_font_inter_regular_14 = io.Fonts->AddFontFromFileTTF("fonts/Inter-Regular.ttf", 14.0f, &cfg);
+    if (!g_font_inter_regular_14) {
+        printf("Failed to load fonts/Inter-Regular.ttf (14px)\n");
+    }
+    
+    // ===== 主页面专用字体 =====
+    
+    // Manrope ExtraBold 48 - 进程标题
+    extern ImFont* g_font_manrope_extrabold_48;
+    cfg.SizePixels = 48.0f;
+    g_font_manrope_extrabold_48 = io.Fonts->AddFontFromFileTTF("fonts/Manrope-ExtraBold.ttf", 48.0f, &cfg);
+    if (!g_font_manrope_extrabold_48) {
+        printf("Failed to load fonts/Manrope-ExtraBold.ttf (48px)\n");
+    }
+    
+    // Inter Medium 16 - PID等一行
+    extern ImFont* g_font_inter_medium_16;
+    cfg.SizePixels = 16.0f;
+    g_font_inter_medium_16 = io.Fonts->AddFontFromFileTTF("fonts/Inter-Medium.ttf", 16.0f, &cfg);
+    if (!g_font_inter_medium_16) {
+        printf("Failed to load fonts/Inter-Medium.ttf (16px)\n");
+    }
+    
+    // Inter Medium 14 - 未选中项
+    extern ImFont* g_font_inter_medium_14;
+    cfg.SizePixels = 14.0f;
+    g_font_inter_medium_14 = io.Fonts->AddFontFromFileTTF("fonts/Inter-Medium.ttf", 14.0f, &cfg);
+    if (!g_font_inter_medium_14) {
+        printf("Failed to load fonts/Inter-Medium.ttf (14px)\n");
+    }
+    
+    // Inter Semibold 20 - 选中项
+    extern ImFont* g_font_inter_semibold_20;
+    cfg.SizePixels = 20.0f;
+    g_font_inter_semibold_20 = io.Fonts->AddFontFromFileTTF("fonts/Inter-SemiBold.ttf", 20.0f, &cfg);
+    if (!g_font_inter_semibold_20) {
+        printf("Failed to load fonts/Inter-SemiBold.ttf (20px)\n");
+    }
+    
+    // Inter Semibold 18 - LOGO
+    extern ImFont* g_font_inter_semibold_18;
+    cfg.SizePixels = 18.0f;
+    g_font_inter_semibold_18 = io.Fonts->AddFontFromFileTTF("fonts/Inter-SemiBold.ttf", 18.0f, &cfg);
+    if (!g_font_inter_semibold_18) {
+        printf("Failed to load fonts/Inter-SemiBold.ttf (18px)\n");
+    }
+    
+    // Inter Semibold 11 - INJECTION TARGET
+    extern ImFont* g_font_inter_semibold_11;
+    cfg.SizePixels = 11.0f;
+    g_font_inter_semibold_11 = io.Fonts->AddFontFromFileTTF("fonts/Inter-SemiBold.ttf", 11.0f, &cfg);
+    if (!g_font_inter_semibold_11) {
+        printf("Failed to load fonts/Inter-SemiBold.ttf (11px)\n");
+    }
+    
+    // Inter Semibold 14 - DLL名
+    extern ImFont* g_font_inter_semibold_14;
+    cfg.SizePixels = 14.0f;
+    g_font_inter_semibold_14 = io.Fonts->AddFontFromFileTTF("fonts/Inter-SemiBold.ttf", 14.0f, &cfg);
+    if (!g_font_inter_semibold_14) {
+        printf("Failed to load fonts/Inter-SemiBold.ttf (14px)\n");
+    }
+    
+    // Inter Semibold 12 - BROWSE (使用已存在的 g_font_inter_semibold_12)
+    // 这个字体已经在前面加载过了，不需要重复加载
+    
+    // Inter Regular 11 - Size等文件信息
+    extern ImFont* g_font_inter_regular_11;
+    cfg.SizePixels = 11.0f;
+    g_font_inter_regular_11 = io.Fonts->AddFontFromFileTTF("fonts/Inter-Regular.ttf", 11.0f, &cfg);
+    if (!g_font_inter_regular_11) {
+        printf("Failed to load fonts/Inter-Regular.ttf (11px)\n");
+    }
+    
+    // 默认字体
+    io.FontDefault = g_font_inter_regular_14;
 
     float clearColor[4] = { 0.f, 0.f, 0.0f, 0.f };
 
@@ -141,8 +295,5 @@ END:
         
     return 0;
 }
-
-
-
 
 

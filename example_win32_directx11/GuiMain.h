@@ -8,6 +8,8 @@ static ID3D11ShaderResourceView* icon_logo = nullptr;
 static ID3D11Resource* textureResource = nullptr;
 HRESULT GuiMainInit();
 
+void RenderLoginWindow();
+
 void RenderMainWindow();
 
 

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="imgui">
@@ -27,6 +27,9 @@
     </Filter>
     <Filter Include="imgui\pandora imgui\manager">
       <UniqueIdentifier>{9a304c36-e2fa-40cc-8175-76b1c9582cd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui\pandora imgui\pages">
+      <UniqueIdentifier>{a1b2c3d4-e5f6-7890-abcd-ef1234567890}</UniqueIdentifier>
     </Filter>
     <Filter Include="shaders">
       <UniqueIdentifier>{388b31c7-80de-4a58-920f-13a924fd3658}</UniqueIdentifier>
@@ -68,6 +71,9 @@
     </ClInclude>
     <ClInclude Include="GuiMain.h">
       <Filter>sources\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="InitializingPage.h">
+      <Filter>imgui\pandora imgui\pages</Filter>
     </ClInclude>
     <ClInclude Include="..\imconfig.h">
       <Filter>imgui</Filter>
@@ -111,6 +117,10 @@
     <ClInclude Include="Shaders.h">
       <Filter>resources</Filter>
     </ClInclude>
+    <ClInclude Include="Profile\Profile.h" />
+    <ClInclude Include="MainPage.h">
+      <Filter>sources\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -121,9 +131,6 @@
     </ClCompile>
     <ClCompile Include="ImageUtil.cpp">
       <Filter>imgui\pandora imgui\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Profile\Profile.h">
-      <Filter>sources\profile</Filter>
     </ClCompile>
     <ClCompile Include="Utils\MathUtil.cpp">
       <Filter>imgui\pandora imgui\utils</Filter>
@@ -172,6 +179,12 @@
     </ClCompile>
     <ClCompile Include="LottieAnimator.cpp">
       <Filter>imgui\pandora imgui\class</Filter>
+    </ClCompile>
+    <ClCompile Include="InitializingPage.cpp">
+      <Filter>imgui\pandora imgui\pages</Filter>
+    </ClCompile>
+    <ClCompile Include="MainPage.cpp">
+      <Filter>sources\gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/项目/Pandora-imgui-docking",
-      "program": "d:/项目/Pandora-imgui-docking/build/Debug/outDebug",
+      "cwd": "d:/项目/Novocaine",
+      "program": "d:/项目/Novocaine/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PRECISION.IO | Clinical Login</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-container": "#fefcff",
+              "outline-variant": "#c1c6d7",
+              "on-secondary-container": "#2d4c83",
+              "background": "#f8f9fa",
+              "primary-fixed": "#d8e2ff",
+              "secondary": "#405e96",
+              "secondary-fixed-dim": "#adc6ff",
+              "on-secondary": "#ffffff",
+              "primary-container": "#0070eb",
+              "surface-bright": "#f8f9fa",
+              "surface-container-high": "#e7e8e9",
+              "surface": "#f8f9fa",
+              "tertiary-fixed-dim": "#ffb595",
+              "surface-container-low": "#f3f4f5",
+              "inverse-primary": "#adc6ff",
+              "error-container": "#ffdad6",
+              "tertiary-container": "#c64f00",
+              "surface-tint": "#005bc1",
+              "surface-container": "#edeeef",
+              "primary-fixed-dim": "#adc6ff",
+              "surface-container-highest": "#e1e3e4",
+              "on-surface": "#191c1d",
+              "on-surface-variant": "#414755",
+              "inverse-surface": "#2e3132",
+              "on-primary-fixed-variant": "#004493",
+              "outline": "#717786",
+              "on-secondary-fixed-variant": "#26467d",
+              "tertiary": "#9e3d00",
+              "surface-dim": "#d9dadb",
+              "on-background": "#191c1d",
+              "error": "#ba1a1a",
+              "on-primary": "#ffffff",
+              "tertiary-fixed": "#ffdbcc",
+              "on-tertiary-fixed": "#351000",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#a1befd",
+              "on-primary-fixed": "#001a41",
+              "secondary-fixed": "#d8e2ff",
+              "primary": "#0058bc",
+              "inverse-on-surface": "#f0f1f2",
+              "surface-variant": "#e1e3e4",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "on-tertiary-container": "#fffbff",
+              "on-tertiary": "#ffffff",
+              "on-tertiary-fixed-variant": "#7c2e00",
+              "on-secondary-fixed": "#001a41"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col items-center justify-center p-6">
+<!-- Top Navigation Suppression (Transactional Page Logic) -->
+<!-- Navigation shell is hidden to prioritize the focused login journey -->
+<main class="w-full max-w-[420px] flex flex-col items-center space-y-12">
+<!-- Brand Identity / Hero Section -->
+<header class="flex flex-col items-center text-center space-y-4">
+<div class="w-16 h-16 bg-primary flex items-center justify-center rounded-lg mb-2">
+<span class="material-symbols-outlined text-on-primary text-4xl" data-icon="biotech">biotech</span>
+</div>
+<div class="space-y-1">
+<h1 class="font-headline font-extrabold text-3xl tracking-tighter text-on-surface">PRECISION.IO</h1>
+<p class="font-label text-on-surface-variant text-sm tracking-wide uppercase opacity-70">Clinical Injection Systems</p>
+</div>
+</header>
+<!-- Login Canvas -->
+<div class="w-full space-y-8">
+<div class="space-y-6">
+<!-- License Key Input Group -->
+<div class="space-y-2">
+<label class="font-label text-xs font-semibold text-on-surface-variant tracking-wider uppercase px-1" for="license-key">License Key</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline text-[20px]" data-icon="vpn_key">vpn_key</span>
+</div>
+<input class="w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border border-outline-variant/30 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all font-body text-on-surface placeholder:text-outline/50" id="license-key" placeholder="XXXX-XXXX-XXXX-XXXX" type="text"/>
+</div>
+</div>
+<!-- Email Input Group (Secondary Option) -->
+<div class="space-y-2">
+<label class="font-label text-xs font-semibold text-on-surface-variant tracking-wider uppercase px-1" for="email">Account Credentials</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline text-[20px]" data-icon="alternate_email">alternate_email</span>
+</div>
+<input class="w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border border-outline-variant/30 rounded-lg focus:outline-none focus:ring-0 focus:border-primary transition-all font-body text-on-surface placeholder:text-outline/50" id="email" placeholder="admin@precision.io" type="email"/>
+</div>
+</div>
+</div>
+<!-- Primary Action -->
+<div class="pt-2">
+<button class="w-full py-4 bg-primary text-on-primary font-headline font-bold text-sm tracking-widest rounded-lg hover:bg-surface-tint active:scale-[0.98] transition-all duration-200">
+                    LOGIN
+                </button>
+</div>
+<!-- Secondary Navigation / Links -->
+<nav class="flex flex-col items-center space-y-4 pt-4">
+<a class="font-label text-xs text-on-surface-variant hover:text-primary transition-colors duration-200 flex items-center gap-2" href="#">
+<span>Forgot Password?</span>
+</a>
+<div class="flex items-center gap-4 w-full">
+<div class="h-px bg-outline-variant/20 flex-1"></div>
+<span class="text-[10px] font-bold text-outline-variant uppercase tracking-widest">or</span>
+<div class="h-px bg-outline-variant/20 flex-1"></div>
+</div>
+<a class="font-label text-xs font-semibold text-secondary hover:underline transition-all" href="#">
+                    Register Account
+                </a>
+</nav>
+</div>
+<!-- System Metadata -->
+<footer class="pt-8 flex flex-col items-center space-y-2">
+<p class="text-[10px] font-label text-outline tracking-widest uppercase">System Status: <span class="text-primary font-bold">Operational</span></p>
+<p class="text-[10px] font-label text-outline/40">Build v4.2.0-Alpha</p>
+</footer>
+</main>
+<!-- Shared Component: Footer (Hidden for focused login state) -->
+<footer class="fixed bottom-0 w-full flex justify-center gap-8 py-8 font-['Inter'] text-xs tracking-wide text-slate-400 dark:text-slate-600">
+<span>© 2024 PRECISION.IO Clinical Systems</span>
+<div class="flex gap-6">
+<a class="hover:text-slate-900 transition-opacity duration-300" href="#">Support</a>
+<a class="hover:text-slate-900 transition-opacity duration-300" href="#">Documentation</a>
+<a class="hover:text-slate-900 transition-opacity duration-300" href="#">Terms of Service</a>
+</div>
+</footer>
+</body></html>

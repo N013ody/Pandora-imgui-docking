@@ -1,4 +1,4 @@
-D:\项目\Pandora-imgui-docking\example_win32_directx11\Debug\example_.ECD4E14F.Up2Date
-D:\项目\Pandora-imgui-docking\example_win32_directx11\Debug\example_win32_directx11.exe
-D:\项目\Pandora-imgui-docking\example_win32_directx11\Debug\DirectXTK.dll
-D:\项目\Pandora-imgui-docking\example_win32_directx11\Debug\rlottie.dll
+D:\项目\Novocaine\example_win32_directx11\Debug\example_.ECD4E14F.Up2Date
+D:\项目\Novocaine\example_win32_directx11\Debug\example_win32_directx11.exe
+D:\项目\Novocaine\example_win32_directx11\Debug\DirectXTK.dll
+D:\项目\Novocaine\example_win32_directx11\Debug\rlottie.dll

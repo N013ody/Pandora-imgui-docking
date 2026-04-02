@@ -2,15 +2,15 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\项目\Pandora-imgui-docking\example_win32_directx11\Debug\example_win32_directx11.exe</FullPath>
+      <FullPath>D:\项目\Novocaine\example_win32_directx11\Debug\example_win32_directx11.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>D:\项目\Pandora-imgui-docking\example_win32_directx11\Debug\PsShader.cso</FullPath>
+      <FullPath>D:\项目\Novocaine\example_win32_directx11\Debug\PsShader.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>D:\项目\Pandora-imgui-docking\example_win32_directx11\Debug\VsShader.cso</FullPath>
+      <FullPath>D:\项目\Novocaine\example_win32_directx11\Debug\VsShader.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />

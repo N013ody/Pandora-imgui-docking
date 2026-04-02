@@ -2,6 +2,7 @@
 #include <functional>
 #include <memory>
 #include <cmath>
+#include <algorithm>
 #include <imgui.h>
 /**
 **@file created by n013ody
@@ -9,7 +10,7 @@
 #define IM_EASING_PI 3.14159265358979323846f
 
 namespace ImEasing {
-    //°®À´×Ô https://easings.net/zh-cn
+    // ç¼“åŠ¨å‡½æ•°å‚è€ƒ https://easings.net/zh-cn
 
     template<typename T>
     const T& my_clamp(const T& value, const T& low, const T& high) {
@@ -18,32 +19,32 @@ namespace ImEasing {
     }
 
 
-    // »ù´¡»º¶¯º¯Êı
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     namespace Ease {
-        //ÆÕÍ¨ÏßĞÔ²åÖµº¯Êı
+        //ï¿½ï¿½Í¨ï¿½ï¿½ï¿½Ô²ï¿½Öµï¿½ï¿½ï¿½ï¿½
         inline float Linear(float t) { return t; }
-        //¶ş´ÎÇúÏß
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         inline float InQuad(float t) { return t * t; }
         inline float OutQuad(float t) { return t * (2 - t); }
         inline float InOutQuad(float t) {
             return t < 0.5f ? 2 * t * t : -1 + (4 - 2 * t) * t;
         }
 
-        //Èı´ÎÇúÏß
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         inline float InCubic(float t) { return t * t * t; }
         inline float OutCubic(float t) { return (--t) * t * t + 1; }
         inline float InOutCubic(float t) {
             return t < 0.5f ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
         }
 
-        //ËÄ´ÎÇúÏß
+        //ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½
         inline float InQuart(float t) { return t * t * t * t; }
         inline float OutQuart(float t) { return 1 - (--t) * t * t * t; }
         inline float InOutQuart(float t) {
             return t < 0.5f ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t;
         }
 
-        //ÕıÏÒÇúÏß
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         inline float InSine(float t) {
             return 1 - std::cos(t * IM_EASING_PI / 2);
         }
@@ -54,7 +55,7 @@ namespace ImEasing {
             return -(std::cos(IM_EASING_PI * t) - 1) / 2;
         }
 
-        //Ö¸ÊıÇúÏß
+        //Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         inline float InExpo(float t) {
             return t == 0 ? 0 : std::pow(2, 10 * (t - 1));
         }
@@ -69,7 +70,7 @@ namespace ImEasing {
                 : (2 - std::pow(2, -20 * t + 10)) / 2;
         }
 
-        //Ô²ĞÎÇúÏß
+        //Ô²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         inline float InCirc(float t) {
             return 1 - std::sqrt(1 - t * t);
         }
@@ -82,7 +83,7 @@ namespace ImEasing {
                 : (std::sqrt(1 - (2 * t - 2) * (2 * t - 2)) + 1) / 2;
         }
 
-        //µ¯ĞÔÇúÏß
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         inline float InElastic(float t) {
             constexpr float c4 = (2 * IM_EASING_PI) / 3;
             return t == 0 ? 0 : t == 1 ? 1
@@ -99,6 +100,26 @@ namespace ImEasing {
                 ? -(std::pow(2, 20 * t - 10) * std::sin((20 * t - 11.125f) * c5)) / 2
                 : (std::pow(2, -20 * t + 10) * std::sin((20 * t - 11.125f) * c5)) / 2 + 1;
         }
+
+        // å›å¼¹ç¼“åŠ¨ (Back Easing) - ç±»ä¼¼çµåŠ¨å²›æ•ˆæœ
+        inline float OutBack(float t) {
+            constexpr float c1 = 1.70158f;
+            constexpr float c3 = c1 + 1;
+            return 1 + c3 * std::pow(t - 1, 3) + c1 * std::pow(t - 1, 2);
+        }
+        inline float InBack(float t) {
+            constexpr float c1 = 1.70158f;
+            constexpr float c3 = c1 + 1;
+            return c3 * t * t * t - c1 * t * t;
+        }
+        inline float InOutBack(float t) {
+            constexpr float c1 = 1.70158f;
+            constexpr float c2 = c1 * 1.525f;
+            return t < 0.5f
+                ? (std::pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2
+                : (std::pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2;
+        }
+
         inline float OutBounce(float t) {
             constexpr float n1 = 7.5625f;
             constexpr float d1 = 2.75f;
@@ -116,7 +137,7 @@ namespace ImEasing {
                 return n1 * (t -= 2.625f / d1) * t + 0.984375f;
             }
         }
-        //·´µ¯ÇúÏß
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         inline float InBounce(float t) {
             return 1 - OutBounce(1 - t);
         }
@@ -127,7 +148,7 @@ namespace ImEasing {
                 : (1 + OutBounce(2 * t - 1)) / 2;
         }
 
-        //·´Ïò»º¶¯
+        //ï¿½ï¿½ï¿½ò»º¶ï¿½
         template<typename Func>
         inline float Reverse(Func easing, float t) {
             return 1 - easing(1 - t);
@@ -138,10 +159,10 @@ namespace ImEasing {
     enum State { Stopped, Running, Paused };
 
     struct Params {
-        float duration = 1.0f;//¶¯»­³ÖĞøÊ±¼ä
-        float delay = 0.0f;//ÑÓ³ÙÊ±¼ä
-        int loopCount = 1;//Ñ­»·´ÎÊı -1ÎŞÏŞÑ­»·
-        bool pingPong = false;//À´»Ø²¥·ÅÑ­»·¶¯»­
+        float duration = 1.0f;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
+        float delay = 0.0f;//ï¿½Ó³ï¿½Ê±ï¿½ï¿½
+        int loopCount = 1;//Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ -1ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½
+        bool pingPong = false;//ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         std::function<float(float)> easing = Ease::Linear;
     };
 
@@ -196,7 +217,7 @@ namespace ImEasing {
         }
 
 
-        //¸üĞÂ¶¯»­ 
+        //ï¿½ï¿½ï¿½Â¶ï¿½ï¿½ï¿½ 
         void Update() override {
             if (m_state != Running) return;
 
@@ -206,18 +227,18 @@ namespace ImEasing {
             const float elapsed = now - m_startTime - m_params.delay;
             if (elapsed < 0) return;
 
-            m_progress = std::clamp(elapsed / m_params.duration, 0.0f, 1.0f);
+            m_progress = my_clamp(elapsed / m_params.duration, 0.0f, 1.0f);
             const float t = m_params.easing(m_progress);
             T current = Lerp(m_start, m_end, t);
 
-            //´¥·¢µã¼ì²â
+            // è§¦å‘å™¨æ£€æŸ¥
             for (auto& [progress, action] : m_triggers) {
                 if (lastProgress < progress && m_progress >= progress) {
                     action();
                 }
             }
 
-            //»Øµ÷º¯Êı
+            // å›è°ƒæ‰§è¡Œ
             if (m_callback)
                 m_callback->Execute(&current, m_progress);
 
@@ -236,17 +257,17 @@ namespace ImEasing {
             return m_state;
         }
 
-        //×¢²áĞÂµÄ¶¯»­
+        //×¢ï¿½ï¿½ï¿½ÂµÄ¶ï¿½ï¿½ï¿½
         void AddTrigger(float progress, TriggerAction action) {
             m_triggers.emplace_back(progress, action);
         }
-        //»Øµ÷º¯Êı
+        //ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
         void SetCallback(std::shared_ptr<AnimationCallback> callback) {
             m_callback = std::dynamic_pointer_cast<TypedCallback<T>>(callback);
         }
 
     private:
-        //Í¨ÓÃ²åÖµº¯Êı
+        //Í¨ï¿½Ã²ï¿½Öµï¿½ï¿½ï¿½ï¿½
         T Lerp(const T& a, const T& b, float t) {
             if constexpr (std::is_arithmetic_v<T>) {
                 return a + (b - a) * t;
@@ -267,7 +288,7 @@ namespace ImEasing {
             }
         }
 
-        //´¦ÀíÑ­»·
+        //ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½
         void HandleLoop() {
             bool loopFinished = false;
 

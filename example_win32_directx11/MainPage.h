@@ -2,6 +2,7 @@
 
 #include "imgui.h"
 #include "InitializingPage.h"
+#include "ModalDialog.h"
 #include <vector>
 #include <string>
 #include <ctime>
@@ -46,6 +47,9 @@ struct MainPageState {
         std::string status;  // SUCCESS, READY, ERROR等
     };
     std::vector<LogEntry> logs;
+    
+    // 模态对话框状态
+    ModalDialogState modal_dialog_state;
     
     // 添加日志的方法
     void AddLog(const std::string& message, const std::string& status = "") {

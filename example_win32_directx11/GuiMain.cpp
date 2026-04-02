@@ -19,6 +19,7 @@ using namespace Window;
 ImFont* g_font_inter_regular_12 = nullptr;
 ImFont* g_font_inter_regular_10 = nullptr;
 ImFont* g_font_inter_semibold_10 = nullptr;
+ImFont* g_font_manrope_bold_11 = nullptr;       // ACTIVE ENVIRONMENTS 11号
 ImFont* g_font_manrope_bold_14 = nullptr;
 ImFont* g_font_manrope_bold_18 = nullptr;
 ImFont* g_font_inter_semibold_12 = nullptr;
@@ -54,6 +55,7 @@ ImageTexture g_icon_path;
 ImageTexture g_icon_file;
 ImageTexture g_icon_inject;
 ImageTexture g_icon_setting;
+ImageTexture g_icon_question;
 ImageTexture g_icon_dump;
 ImageTexture g_icon_viewdump;
 bool g_main_images_loaded = false;
@@ -876,6 +878,7 @@ void RenderMainContentPage(const MorphAnimation& morph) {
         g_icon_file = LoadPNGTexture(Window::WindowDatas.g_pd3dDevice, "images/Icon_file.png");
         g_icon_inject = LoadPNGTexture(Window::WindowDatas.g_pd3dDevice, "images/Icon_inject.png");
         g_icon_setting = LoadPNGTexture(Window::WindowDatas.g_pd3dDevice, "images/Icon_setting.png");
+        g_icon_question = LoadPNGTexture(Window::WindowDatas.g_pd3dDevice, "images/Icon_question.png");
         g_icon_dump = LoadPNGTexture(Window::WindowDatas.g_pd3dDevice, "images/Icon_dump.png");
         g_icon_viewdump = LoadPNGTexture(Window::WindowDatas.g_pd3dDevice, "images/Icon_viewdump.png");
         g_main_images_loaded = true;

@@ -18,8 +18,12 @@ extern ImageTexture g_icon_path;
 extern ImageTexture g_icon_file;
 extern ImageTexture g_icon_inject;
 extern ImageTexture g_icon_setting;
+extern ImageTexture g_icon_question;
 extern ImageTexture g_icon_dump;
 extern ImageTexture g_icon_viewdump;
+
+// 外部字体（在GuiMain.cpp中定义）
+extern ImFont* g_font_manrope_bold_11;
 
 // 颜色定义 (从 MAINPAGE.html 提取)
 #define MP_COLOR_BACKGROUND IM_COL32(248, 249, 250, 255)      // #f8f9fa
@@ -96,6 +100,13 @@ void RenderMainPage(MainPageState& state, float window_width, float window_heigh
     
     // 渲染底部栏（独立于主内容区域）
     RenderBottomBar(state, window_width, window_height, bottom_bar_height, window_pos, font_small);
+    
+    // 渲染模态对话框（如果打开）
+    if (state.modal_dialog_state.is_open || state.modal_dialog_state.open_animation > 0.0f) {
+        float delta_time = ImGui::GetIO().DeltaTime;
+        state.modal_dialog_state.UpdateAnimation(delta_time);
+        RenderModalDialog(state.modal_dialog_state, font_title, font_body, font_small);
+    }
 }
 
 // 渲染顶部导航栏
@@ -188,15 +199,15 @@ void RenderTopBar(MainPageState& state, float window_width, ImVec2 window_pos,
     float button_y = y + (topbar_height - button_size) / 2.0f;
     float right_x = window_pos.x + window_width - 100.0f;
     
-    // 第一个设置按钮 - Icon_setting.png (17x17)
+    // 第一个按钮 - Icon_question.png (17x17)
     ImRect help_rect(ImVec2(right_x, button_y), ImVec2(right_x + button_size, button_y + button_size));
     bool help_hovered = ImGui::IsMouseHoveringRect(help_rect.Min, help_rect.Max);
     draw_list->AddRectFilled(help_rect.Min, help_rect.Max, 
         help_hovered ? MP_COLOR_SURFACE_HIGH : MP_COLOR_SURFACE, 8.0f);
-    if (g_icon_setting.valid) {
-        float icon_x = right_x + (button_size - 17.0f) / 2.0f;
-        float icon_y = button_y + (button_size - 17.0f) / 2.0f;
-        draw_list->AddImage(g_icon_setting.srv, 
+    if (g_icon_question.valid) {
+        float icon_x = floorf(right_x + (button_size - 17.0f) / 2.0f);
+        float icon_y = floorf(button_y + (button_size - 17.0f) / 2.0f);
+        draw_list->AddImage(g_icon_question.srv, 
             ImVec2(icon_x, icon_y), 
             ImVec2(icon_x + 17.0f, icon_y + 17.0f));
     }
@@ -208,8 +219,8 @@ void RenderTopBar(MainPageState& state, float window_width, ImVec2 window_pos,
     draw_list->AddRectFilled(settings_rect.Min, settings_rect.Max,
         settings_hovered ? MP_COLOR_SURFACE_HIGH : MP_COLOR_SURFACE, 8.0f);
     if (g_icon_setting.valid) {
-        float icon_x = right_x + (button_size - 17.0f) / 2.0f;
-        float icon_y = button_y + (button_size - 17.0f) / 2.0f;
+        float icon_x = floorf(right_x + (button_size - 17.0f) / 2.0f);
+        float icon_y = floorf(button_y + (button_size - 17.0f) / 2.0f);
         draw_list->AddImage(g_icon_setting.srv, 
             ImVec2(icon_x, icon_y), 
             ImVec2(icon_x + 17.0f, icon_y + 17.0f));
@@ -235,20 +246,36 @@ void RenderBottomBar(MainPageState& state, float window_width, float window_heig
         1.0f
     );
     
-    // 左侧标签 - LOGS更靠左，间距更小 - Inter Semibold 10
-    float footer_x = window_pos.x + 24.0f;
+    // 左侧标签 - LOGS更靠左，SECURITY和NETWORKS有间距 - Inter Semibold 10
     float footer_y = y + (bar_height - 10.0f) / 2.0f;
-    const char* footer_tabs[] = {"LOGS", "NETWORK", "SECURITY"};
-    float footer_spacing = 40.0f;
     
-    for (int i = 0; i < 3; i++) {
-        ImU32 footer_color = (i == 0) ? MP_COLOR_PRIMARY : MP_COLOR_OUTLINE;
-        if (font_small) {
-            draw_list->AddText(font_small, 10.0f, ImVec2(footer_x, footer_y), footer_color, footer_tabs[i]);
-        } else {
-            draw_list->AddText(ImVec2(footer_x, footer_y), footer_color, footer_tabs[i]);
-        }
-        footer_x += footer_spacing;
+    // LOGS - 靠左
+    const char* logs_text = "LOGS";
+    float footer_x = window_pos.x + 24.0f;
+    if (font_small) {
+        draw_list->AddText(font_small, 10.0f, ImVec2(footer_x, footer_y), MP_COLOR_PRIMARY, logs_text);
+    } else {
+        draw_list->AddText(ImVec2(footer_x, footer_y), MP_COLOR_PRIMARY, logs_text);
+    }
+    
+    // NETWORKS - 与LOGS有间距
+    const char* networks_text = "NETWORKS";
+    if (font_small) {
+        footer_x += font_small->CalcTextSizeA(10.0f, FLT_MAX, 0.0f, logs_text).x + 40.0f;
+        draw_list->AddText(font_small, 10.0f, ImVec2(footer_x, footer_y), MP_COLOR_OUTLINE, networks_text);
+    } else {
+        footer_x += 70.0f;
+        draw_list->AddText(ImVec2(footer_x, footer_y), MP_COLOR_OUTLINE, networks_text);
+    }
+    
+    // SECURITY - 与NETWORKS有间距
+    const char* security_text = "SECURITY";
+    if (font_small) {
+        footer_x += font_small->CalcTextSizeA(10.0f, FLT_MAX, 0.0f, networks_text).x + 40.0f;
+        draw_list->AddText(font_small, 10.0f, ImVec2(footer_x, footer_y), MP_COLOR_OUTLINE, security_text);
+    } else {
+        footer_x += 90.0f;
+        draw_list->AddText(ImVec2(footer_x, footer_y), MP_COLOR_OUTLINE, security_text);
     }
     
     // 右侧版本信息 - 更靠右 - Inter Semibold 10
@@ -270,13 +297,13 @@ void RenderSidebarContent(MainPageState& state, float width, float height,
     float content_x = 24.0f;
     float current_y = 24.0f;
     
-    // Active Environments - 使用字间距渲染
+    // Active Environments - 使用Manrope Bold 14号字体
     const char* title = "ACTIVE ENVIRONMENTS";
-    if (font_title) {
-        // 使用更大的字号（14px）
+    if (g_font_manrope_bold_11) {
+        // 使用Manrope Bold 14号字体
         float title_font_size = 14.0f;
         float title_x = pos.x + content_x;
-        float char_spacing = 3.0f;  // 增加字间距
+        float char_spacing = 3.0f;  // 字间距
         
         // 手动绘制每个字符，使用对齐的坐标避免模糊
         for (size_t i = 0; i < strlen(title); i++) {
@@ -284,8 +311,8 @@ void RenderSidebarContent(MainPageState& state, float width, float height,
             // 使用floor对齐到像素边界，避免子像素模糊
             float fx = floorf(title_x);
             float fy = floorf(pos.y + current_y);
-            draw_list->AddText(font_title, title_font_size, ImVec2(fx, fy), MP_COLOR_ON_SURFACE_VARIANT, c);
-            ImVec2 char_size = font_title->CalcTextSizeA(title_font_size, FLT_MAX, 0.0f, c);
+            draw_list->AddText(g_font_manrope_bold_11, title_font_size, ImVec2(fx, fy), MP_COLOR_ON_SURFACE_VARIANT, c);
+            ImVec2 char_size = g_font_manrope_bold_11->CalcTextSizeA(title_font_size, FLT_MAX, 0.0f, c);
             title_x += char_size.x + char_spacing;
         }
     } else {
@@ -300,10 +327,11 @@ void RenderSidebarContent(MainPageState& state, float width, float height,
     
     draw_list->AddRectFilled(search_rect.Min, search_rect.Max, MP_COLOR_SURFACE_HIGHEST, 12.0f);
     
-    // 搜索图标 - Icon_search.png (17x17)
+    // 搜索图标 - Icon_search.png (11x11)
     if (g_icon_search.valid) {
-        ImVec2 icon_pos = ImVec2(pos.x + content_x + 12.0f, pos.y + current_y + (search_height - 17.0f) / 2.0f);
-        draw_list->AddImage(g_icon_search.srv, icon_pos, ImVec2(icon_pos.x + 17.0f, icon_pos.y + 17.0f));
+        float icon_x = floorf(pos.x + content_x + 14.0f);
+        float icon_y = floorf(pos.y + current_y + (search_height - 11.0f) / 2.0f);
+        draw_list->AddImage(g_icon_search.srv, ImVec2(icon_x, icon_y), ImVec2(icon_x + 11.0f, icon_y + 11.0f));
     }
     
     ImGui::SetCursorScreenPos(ImVec2(pos.x + content_x + 40.0f, pos.y + current_y + 8.0f));
@@ -316,8 +344,29 @@ void RenderSidebarContent(MainPageState& state, float width, float height,
     current_y += search_height + 16.0f;
     
     float list_x = 12.0f;
+    
+    // 搜索过滤
+    std::string search_filter = state.search_buffer;
+    // 转换为小写进行不区分大小写的搜索
+    auto to_lower = [](std::string str) {
+        std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+        return str;
+    };
+    std::string search_lower = to_lower(search_filter);
+    
     for (size_t i = 0; i < state.processes.size(); i++) {
         const auto& proc = state.processes[i];
+        
+        // 搜索过滤：如果输入了搜索关键字，只显示匹配的进程
+        if (!search_filter.empty()) {
+            std::string proc_name_lower = to_lower(proc.name);
+            std::string proc_pid_lower = to_lower(proc.pid);
+            if (proc_name_lower.find(search_lower) == std::string::npos && 
+                proc_pid_lower.find(search_lower) == std::string::npos) {
+                continue; // 跳过不匹配的进程
+            }
+        }
+        
         float item_height = 48.0f;
         float item_width = width - 24.0f;
         
@@ -363,8 +412,14 @@ void RenderSidebarContent(MainPageState& state, float width, float height,
         }
         
         if (type_icon && type_icon->valid) {
-            ImVec2 icon_pos = ImVec2(pos.x + list_x + 16.0f, pos.y + current_y + (item_height - icon_h) / 2.0f);
-            draw_list->AddImage(type_icon->srv, icon_pos, ImVec2(icon_pos.x + icon_w, icon_pos.y + icon_h));
+            float icon_x = floorf(pos.x + list_x + 16.0f);
+            float icon_y = floorf(pos.y + current_y + (item_height - icon_h) / 2.0f);
+            ImVec2 icon_pos = ImVec2(icon_x, icon_y);
+            // 选中状态使用 #0058BC，未选中使用 #717786
+            bool is_proc_selected = ((int)i == state.selected_process);
+            ImU32 icon_tint = is_proc_selected ? IM_COL32(0, 88, 188, 255) : IM_COL32(113, 119, 134, 255);
+            draw_list->AddImage(type_icon->srv, icon_pos, ImVec2(icon_pos.x + icon_w, icon_pos.y + icon_h), 
+                ImVec2(0, 0), ImVec2(1, 1), icon_tint);
         }
         
         float name_x = pos.x + list_x + 48.0f;
@@ -372,24 +427,73 @@ void RenderSidebarContent(MainPageState& state, float width, float height,
         float process_text_y = name_y;  // 进程名实际Y坐标
         float process_text_height = 16.0f;  // 默认文本高度
         
-        // 根据选中状态使用不同字体
+        // 参考长度：VALORANT-Win64-Shipping.exe
+        const char* ref_text = "VALORANT-Win64-Shipping.exe";
+        
+        // 根据选中状态使用不同字体，并处理超长进程名
         if ((int)i == state.selected_process) {
             // 选中项 - Inter Semibold 20
             if (font_process_selected) {
-                ImVec2 text_size = font_process_selected->CalcTextSizeA(20.0f, FLT_MAX, 0.0f, proc.name.c_str());
+                float font_size = 20.0f;
+                float max_width = font_process_selected->CalcTextSizeA(font_size, FLT_MAX, 0.0f, ref_text).x;
+                
+                // 如果进程名超过参考长度，添加省略号
+                std::string display_name = proc.name;
+                ImVec2 text_size = font_process_selected->CalcTextSizeA(font_size, FLT_MAX, 0.0f, display_name.c_str());
+                if (text_size.x > max_width) {
+                    // 逐步截断并添加...
+                    display_name = proc.name;
+                    while (display_name.length() > 3) {
+                        display_name.pop_back();
+                        std::string test_name = display_name + "...";
+                        ImVec2 test_size = font_process_selected->CalcTextSizeA(font_size, FLT_MAX, 0.0f, test_name.c_str());
+                        if (test_size.x <= max_width) {
+                            display_name = test_name;
+                            break;
+                        }
+                    }
+                    if (display_name.length() <= 3) {
+                        display_name = "...";
+                    }
+                    text_size = font_process_selected->CalcTextSizeA(font_size, FLT_MAX, 0.0f, display_name.c_str());
+                }
+                
                 process_text_y = pos.y + current_y + (item_height - text_size.y) / 2.0f;
                 process_text_height = text_size.y;
-                draw_list->AddText(font_process_selected, 20.0f, ImVec2(name_x, process_text_y), MP_COLOR_ON_SURFACE, proc.name.c_str());
+                draw_list->AddText(font_process_selected, font_size, ImVec2(name_x, process_text_y), MP_COLOR_ON_SURFACE, display_name.c_str());
             } else {
                 draw_list->AddText(ImVec2(name_x, name_y), MP_COLOR_ON_SURFACE, proc.name.c_str());
             }
         } else {
             // 未选中项 - Inter Medium 14
             if (font_process_unselected) {
-                ImVec2 text_size = font_process_unselected->CalcTextSizeA(14.0f, FLT_MAX, 0.0f, proc.name.c_str());
+                float font_size = 14.0f;
+                float max_width = font_process_unselected->CalcTextSizeA(font_size, FLT_MAX, 0.0f, ref_text).x;
+                
+                // 如果进程名超过参考长度，添加省略号
+                std::string display_name = proc.name;
+                ImVec2 text_size = font_process_unselected->CalcTextSizeA(font_size, FLT_MAX, 0.0f, display_name.c_str());
+                if (text_size.x > max_width) {
+                    // 逐步截断并添加...
+                    display_name = proc.name;
+                    while (display_name.length() > 3) {
+                        display_name.pop_back();
+                        std::string test_name = display_name + "...";
+                        ImVec2 test_size = font_process_unselected->CalcTextSizeA(font_size, FLT_MAX, 0.0f, test_name.c_str());
+                        if (test_size.x <= max_width) {
+                            display_name = test_name;
+                            break;
+                        }
+                    }
+                    if (display_name.length() <= 3) {
+                        display_name = "...";
+                    }
+                    text_size = font_process_unselected->CalcTextSizeA(font_size, FLT_MAX, 0.0f, display_name.c_str());
+                }
+                
                 process_text_y = pos.y + current_y + (item_height - text_size.y) / 2.0f;
                 process_text_height = text_size.y;
-                draw_list->AddText(font_process_unselected, 14.0f, ImVec2(name_x, process_text_y), MP_COLOR_ON_SURFACE_VARIANT, proc.name.c_str());
+                draw_list->AddText(font_process_unselected, font_size, ImVec2(name_x, process_text_y), MP_COLOR_ON_SURFACE_VARIANT, display_name.c_str());
             } else {
                 draw_list->AddText(ImVec2(name_x, name_y), MP_COLOR_ON_SURFACE_VARIANT, proc.name.c_str());
             }
@@ -586,9 +690,11 @@ void RenderMainContentArea(MainPageState& state, float width, float height,
         
         // PID 图标 (11x12)
         if (g_icon_process.valid) {
+            float pid_icon_x = floorf(text_x);
+            float pid_icon_y = floorf(info_y + icon_y_offset);
             draw_list->AddImage(g_icon_process.srv, 
-                ImVec2(text_x, info_y + icon_y_offset), 
-                ImVec2(text_x + 11.0f, info_y + icon_y_offset + 12.0f));
+                ImVec2(pid_icon_x, pid_icon_y), 
+                ImVec2(pid_icon_x + 11.0f, pid_icon_y + 12.0f));
             text_x += 16.0f;
         }
         
@@ -603,11 +709,13 @@ void RenderMainContentArea(MainPageState& state, float width, float height,
             text_x += 80.0f;
         }
         
-        // 保护图标 (10x12)
+        // 保护图标 (10x12) - x64 Native前
         if (g_icon_protect.valid) {
+            float protect_icon_x = floorf(text_x);
+            float protect_icon_y = floorf(info_y + icon_y_offset);
             draw_list->AddImage(g_icon_protect.srv, 
-                ImVec2(text_x, info_y + icon_y_offset), 
-                ImVec2(text_x + 10.0f, info_y + icon_y_offset + 12.0f));
+                ImVec2(protect_icon_x, protect_icon_y), 
+                ImVec2(protect_icon_x + 10.0f, protect_icon_y + 12.0f));
             text_x += 15.0f;
         }
         
@@ -636,7 +744,7 @@ void RenderMainContentArea(MainPageState& state, float width, float height,
         } else {
             draw_list->AddText(ImVec2(text_x, info_y), MP_COLOR_ON_SURFACE_VARIANT, path_text);
         }
-        current_y += 78.0f;  // 增加50px，让注入按钮等往上移动40px (原来118px - 40px = 78px)
+        current_y += 58.0f;  // 增加30px，让注入按钮等再往上移动20px (原来78px - 20px = 58px)
         
         // ===== 左侧：白色矩形底色 =====
         float left_box_width = 370.0f;
@@ -773,6 +881,11 @@ void RenderMainContentArea(MainPageState& state, float width, float height,
         
         if (font_button_other) {
             draw_list->AddText(font_button_other, 14.0f, ImVec2(dump_start_x, dump_text_y), MP_COLOR_ON_SURFACE, dump_text);
+        }
+        
+        // DUMP按钮点击 - 打开模态对话框
+        if (dump_hovered && ImGui::IsMouseClicked(0)) {
+            state.modal_dialog_state.Open();
         }
         
         // VIEW MAP按钮 - 带Icon_viewdump.png图标 (13x9)

@@ -107,6 +107,14 @@ int main(int, char**){
         printf("Failed to load fonts/Inter-SemiBold.ttf (12px)\n");
     }
     
+    // Manrope Bold 11 - ACTIVE ENVIRONMENTS
+    extern ImFont* g_font_manrope_bold_11;
+    cfg.SizePixels = 11.0f;
+    g_font_manrope_bold_11 = io.Fonts->AddFontFromFileTTF("fonts/Manrope-Bold.ttf", 11.0f, &cfg);
+    if (!g_font_manrope_bold_11) {
+        printf("Failed to load fonts/Manrope-Bold.ttf (11px)\n");
+    }
+
     // Manrope Bold - LOGIN (大小16)
     extern ImFont* g_font_manrope_bold_14;
     cfg.SizePixels = 16.0f;

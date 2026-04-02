@@ -206,6 +206,7 @@
     <ClCompile Include="LottieAnimator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainPage.cpp" />
+    <ClCompile Include="ModalDialog.cpp" />
     <ClCompile Include="Profile\Profile.cpp" />
     <ClCompile Include="Utils\MathUtil.cpp" />
     <ClCompile Include="Utils\WindowUtil.cpp" />
